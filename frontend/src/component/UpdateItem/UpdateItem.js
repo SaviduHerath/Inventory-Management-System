@@ -1,71 +1,86 @@
-import React, { useState } from "react";
-import axios from "axios";
-import "./ItemAdd.css";
+import React from 'react'
+import axios from 'axios'
+import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
-function ItemAdd() {
 
+function UpdateItem() {
+  const {id} = useParams();
   const [inventory, setInventory] = useState({
-    itemImage: null,
-    itemName: "",
-    itemCategory: "",
-    itemDetails: "",
+    itemName: '',
+    itemCategory: '',
+    itemDetails: '',
+    itemImage: null
   });
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    const loadItem = async () => {
+      const result = await axios.get(`http://localhost:8080/inventory/${id}`);
+      const itemData = result.data;
 
-    if (e.target.name === "itemImage") {
       setInventory({
-        ...inventory,
-        itemImage: e.target.files[0],
+        itemName: itemData.itemName,
+        itemCategory: itemData.itemCategory,
+        itemDetails: itemData.itemDetails,
+        itemImage: null
       });
+    };
+
+    loadItem();
+  }, [id]);
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === 'itemImage' && files && files.length > 0) {
+      setInventory(prevState => ({
+        ...prevState,
+        itemImage: files[0]
+      }));
     } else {
-      setInventory({
-        ...inventory,
-        [e.target.name]: e.target.value,
-      });
+      setInventory(prevState => ({
+        ...prevState,
+        [name]: value
+      }));
     }
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-
+    
     try {
-
-      // Upload Image
-      const formData = new FormData();
-      formData.append("file", inventory.itemImage);
-
-      const uploadResponse = await axios.post(
-        "http://localhost:8080/inventory/itemImg",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      // Backend returns filename only
-      const imageName = uploadResponse.data;
-
-      // Save Inventory
-      const item = {
-        itemImage: imageName,
+      let imageName = null;
+      
+      // Upload image first if a new file is selected
+      if (inventory.itemImage && inventory.itemImage instanceof File) {
+        const formData = new FormData();
+        formData.append("file", inventory.itemImage);
+        
+        const uploadResponse = await axios.post(
+          "http://localhost:8080/inventory/itemImg",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        imageName = uploadResponse.data;
+      }
+      
+      // Update inventory item
+      const updatedItem = {
         itemName: inventory.itemName,
         itemCategory: inventory.itemCategory,
         itemDetails: inventory.itemDetails,
+        itemImage: imageName || inventory.itemImage // Use new image if uploaded, otherwise keep existing
       };
-
-      await axios.post("http://localhost:8080/inventory", item);
-
-      alert("Item Added Successfully");
-
+      
+      await axios.put(`http://localhost:8080/inventory/${id}`, updatedItem);
+      alert("Item updated successfully!");
       window.location.href = "/";
-
-    } catch (err) {
-      console.log(err);
-      alert("Error");
+    } catch (error) {
+      console.error("Error updating item:", error);
+      alert("Failed to update item.");
     }
   };
 
@@ -133,7 +148,6 @@ function ItemAdd() {
             name="itemImage"
             accept="image/*"
             onChange={handleChange}
-            required
           />
 
         </div>
@@ -145,7 +159,7 @@ function ItemAdd() {
       </form>
 
     </div>
-  );
+  )
 }
 
-export default ItemAdd;
+export default UpdateItem

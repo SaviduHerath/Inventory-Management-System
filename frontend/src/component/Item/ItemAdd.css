@@ -1,0 +1,77 @@
+/* ItemAdd.css */
+
+.container.mt-5 {
+  max-width: 600px;
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.container.mt-5 h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.75rem;
+  text-align: center;
+}
+
+.mb-3 label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #374151;
+  margin-bottom: 0.4rem;
+}
+
+.form-control,
+.form-select {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #111827;
+  background-color: #f9fafb;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  background-color: #ffffff;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+input[type="file"].form-control {
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+}
+
+.btn.btn-primary {
+  display: inline-block;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background-color: #4f46e5;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn.btn-primary:hover {
+  background-color: #4338ca;
+}
+
+.btn.btn-primary:active {
+  transform: scale(0.98);
+}
