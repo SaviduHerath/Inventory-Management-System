@@ -86,4 +86,25 @@ public class InventoryController {
             return inventoryRepository.save(existingInventory);
         }).orElseThrow(()->new InventoryNotFoundException(id));
     }
+
+    //Delete
+    @DeleteMapping("/inventory/{id}")
+    String deleteItem(@PathVariable Long id){
+        InventoryModel inventoryModel = inventoryRepository.findById(id)
+                .orElseThrow(()-> new InventoryNotFoundException(id));
+        //image delete
+        String itemImage = inventoryModel.getItemImage();
+        if (itemImage!=null && !itemImage.isEmpty()){
+            File imageFile = new File("src/main/Upload/"+itemImage);
+            if (imageFile.exists()){
+                if (imageFile.delete()){
+                    System.out.println("Delete successfully");
+                }else {
+                    System.out.println("Delete Failed");
+                }
+            }
+        }
+        inventoryRepository.deleteById(id);
+        return "data with id"+id+" image deleted";
+    }
 }

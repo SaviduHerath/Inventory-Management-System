@@ -22,6 +22,21 @@ function DisplayItem() {
         window.location.href = `/updateItem/${id}`;
     }
 
+    const DeleteNavigate = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+        if (confirmDelete) {
+            try {
+                await axios.delete(`http://localhost:8080/inventory/${id}`);
+                alert("Item deleted successfully!");
+                loadInventory(); // Refresh the list after deletion
+            
+            }catch (error) {
+                console.error("Error deleting item:", error);
+                alert("Failed to delete the item. Please try again.");
+            }
+        }
+    }
+
   return (
     <div className="container">
         <h1>Display Item</h1>
@@ -47,6 +62,9 @@ function DisplayItem() {
                         </td>
                         <td>
                             <button onClick={() => UpdateNavigate(item.id)}>Update</button>
+                        </td>
+                         <td>
+                            <button onClick={() => DeleteNavigate(item.id)}>Delete</button>
                         </td>
                     </tr>
                 ))}
