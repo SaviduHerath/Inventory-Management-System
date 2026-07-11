@@ -3,6 +3,8 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import './DisplayItem.css'
+import jspdf from 'jspdf';
+import autotable from 'jspdf-autotable';
 
 function DisplayItem() {
 
@@ -37,9 +39,24 @@ function DisplayItem() {
         }
     }
 
+    //PDF Generation
+    const generatePDF = (inventory)=> {
+        const doc = new jspdf();
+        doc.text("Inventory List", 14, 10);
+        const tableData = inventory.map(item => [item.id, item.itemName, item.itemCategory, item.itemDetails]);
+        autotable(doc, {
+            head: [['ID', 'Item Name', 'Category', 'Details']],
+            body: tableData,
+            startY: 20,
+        });
+        doc.save('inventory_Items.pdf');
+    }
+
   return (
     <div className="container">
         <h1>Display Item</h1>
+        <button onClick={() => generatePDF(inventory)}>Generate PDF</button>
+        <br/><br/>
         <table>
             <thead>
                 <tr>
